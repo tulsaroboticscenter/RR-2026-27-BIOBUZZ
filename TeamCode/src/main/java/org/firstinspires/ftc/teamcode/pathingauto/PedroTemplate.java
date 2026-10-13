@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.pathingauto;
 
+import org.firstinspires.ftc.teamcode.pedro.Constants;
+
+// ftc robotcore
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -18,36 +21,40 @@ import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
-import org.firstinspires.ftc.teamcode.pedro.Constants;
+/*
 
-@Autonomous(name = "SamplePedroAuto", group = "null")
+    Welcome! This is a template Pedro auto designed as a
+    foundation for real Pedro Pathing autos. It should not
+    be run as a real OpMode. Please refer to the Pedro Pathing
+    docs for more assistance.
+
+ */
+
+@Autonomous
 @Disabled
-public class PathingAuto extends OpMode {
+public class PedroTemplate extends OpMode {
     private Follower follower;
     private final PoseFactory p = PoseFactory.degrees();
 
-    private final Pose startPose = p.of(24, 24, 0);
-    private final Pose park = p.of(48, 48, 90);
-    private final Pose controlPose = p.of(36, 60, 45);
+    // Pose declarations belong here.
+    // For example (replacing null value):
+    private final Pose examplePose = null; // = p.of(x, y, heading);
+    private final Pose examplePose2 = null; // = p.of(x, y, heading);
+    private final Pose exampleControlPose = null; // = p.of(x, y, heading);
 
-    // OUR PATHS ARE UNDER OUR POSES - max, 2026
-
-    private Path move() {
-        return line(startPose, controlPose).linear(startPose, controlPose);
+    private Path examplePath() {
+        // This creates a line between two poses on the field.
+        return line(examplePose, examplePose2).linear(examplePose, examplePose2);
     }
 
-    private Path straightPark() {
-        return line(startPose, park).linear(startPose, park);
-    }
-
-    private Path park() {
-        return curve(startPose, controlPose, park).linear(startPose, park);
+    private Path exampleCurvePath() {
+        // This creates a curve using three poses on the field.
+        return curve(examplePose, examplePose2, exampleControlPose).linear(examplePose, exampleControlPose);
     }
 
     private Command autoRoutine() {
         return sequential(
-                follow(follower, move()),
-                follow(follower, park())
+                follow(follower, examplePath())
         );
     }
 
@@ -56,7 +63,8 @@ public class PathingAuto extends OpMode {
         Scheduler.reset();
 
         follower = Constants.create(hardwareMap);
-        follower.setPose(startPose);
+        follower.setPose(examplePose); // This should be replaced with the actual starting pose.
+        follower.update();
     }
 
     @Override

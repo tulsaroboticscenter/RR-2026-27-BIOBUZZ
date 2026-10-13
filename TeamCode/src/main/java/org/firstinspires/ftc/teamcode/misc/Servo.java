@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.samples;
+package org.firstinspires.ftc.teamcode.misc;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -47,7 +47,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Concept: Scan Servo", group = "Concept")
+@TeleOp(name = "Concept: Scan Servo", group = "Test")
 @Disabled
 public class Servo extends LinearOpMode {
 
@@ -67,7 +67,7 @@ public class Servo extends LinearOpMode {
 
         // Connect to servo (Assume Robot Left Hand)
         // Change the text in quotes to match any servo name on your robot.
-        servo = hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, "test_servo");
+        servo = hardwareMap.get(com.qualcomm.robotcore.hardware.Servo.class, "servo");
 
         // Wait for the start button
         telemetry.addData(">", "Press Start to scan Servo." );

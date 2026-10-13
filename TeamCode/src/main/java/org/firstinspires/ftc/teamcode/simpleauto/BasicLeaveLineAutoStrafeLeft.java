@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Leave Line, Strafe Left", group = "auto")
+@Autonomous(name = "Leave Line, Strafe Left", group = "Linear Auto")
 public class BasicLeaveLineAutoStrafeLeft extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 

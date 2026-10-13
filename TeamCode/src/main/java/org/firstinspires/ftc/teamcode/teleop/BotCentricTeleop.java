@@ -27,12 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.firstinspires.ftc.teamcode.teleop;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Bot Centric Teleop", group = "Robot")
+@TeleOp(name = "Bot Centric Teleop", group = "Drive")
 public class BotCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -43,6 +45,14 @@ public class BotCentricTeleop extends OpMode {
     DcMotor flywheel;
     DcMotor intake;
     DcMotor intake2;
+    Servo servo;
+
+    boolean servoSwitch;
+    boolean servoButtonState;
+    boolean previousServoButtonState;
+
+    double pollenPosition = 0.3;
+    double nectarPosition = 0.8;
 
     @Override
     public void init() {
@@ -54,6 +64,7 @@ public class BotCentricTeleop extends OpMode {
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake2 = hardwareMap.get(DcMotor.class, "intake2");
+        servo = hardwareMap.get(Servo.class, "servo");
 
         // Reverse the motor directions on the left side
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -61,6 +72,7 @@ public class BotCentricTeleop extends OpMode {
         flywheel.setDirection(DcMotor.Direction.REVERSE);
         intake2.setDirection(DcMotor.Direction.REVERSE);
 
+        // These lines should be removed if we aren't using the encoder
         frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -77,7 +89,20 @@ public class BotCentricTeleop extends OpMode {
     }
 
     @Override
+    public void start() {
+        // Sets default servo mode
+        servo.setPosition(nectarPosition);
+    }
+
+    @Override
     public void loop() {
+        telemetry.addLine("You are in ROBOT CENTRIC");
+        telemetry.addLine("The left joystick sets the robot direction");
+        telemetry.addLine("Moving the right joystick left and right turns the robot");
+        telemetry.addLine("Hold left trigger to activate intake inwards, press the bumper in front of it to reverse");
+        telemetry.addLine("Hold right trigger to activate flywheel for shooting");
+        telemetry.addLine("Press B to toggle the gate servo position.");
+        telemetry.addLine(" ");
 
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
@@ -86,16 +111,37 @@ public class BotCentricTeleop extends OpMode {
             flywheel.setPower(0);
         }
 
-        // Intake code
+        // Intake 1 code
         if (gamepad1.left_trigger_pressed || (gamepad1.left_bumper && gamepad1.left_trigger_pressed)) {
             intake.setPower(1);
-            intake2.setPower(1);
+            intake2.setPower(0);
         } else if (gamepad1.left_bumper) {
             intake.setPower(-1);
             intake2.setPower(-1);
         } else {
             intake.setPower(0);
             intake2.setPower(0);
+        }
+
+        // Intake 2 code
+        if (gamepad1.a && !gamepad1.left_bumper) {
+            intake2.setPower(1);
+        } else {
+            intake2.setPower(0);
+        }
+
+        // Servo code
+        servoButtonState = gamepad1.b;
+        if (servoButtonState && !previousServoButtonState) {
+            servoSwitch = !servoSwitch; // Toggles the gate position
+        }
+
+        previousServoButtonState = servoButtonState;
+
+        if (servoSwitch) {
+            servo.setPosition(nectarPosition);
+        } else {
+            servo.setPosition(pollenPosition);
         }
 
         drive(-gamepad1.left_stick_y, gamepad1.left_stick_x * 1.1, gamepad1.right_stick_x);
@@ -127,6 +173,8 @@ public class BotCentricTeleop extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftDrive.getPower(), frontRightDrive.getPower());
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftDrive.getPower(), backRightDrive.getPower());
+        telemetry.addData("Servo Switch", servoSwitch);
+        telemetry.addData("Servo Position", servo.getPosition());
         telemetry.update();
     }
 }
