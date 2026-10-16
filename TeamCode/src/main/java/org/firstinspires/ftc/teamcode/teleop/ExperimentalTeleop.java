@@ -65,6 +65,10 @@ public class ExperimentalTeleop extends OpMode {
     double pollenPosition = 0.3;
     double nectarPosition = 0.8;
 
+    double tx;
+    double ty;
+    double ta;
+
     @Override
     public void init() {
         // Map motors to assigned driver hub names
@@ -183,18 +187,15 @@ public class ExperimentalTeleop extends OpMode {
 
         LLResult result = limelight.getLatestResult();
         if (result != null && result.isValid()) {
-            double tx = result.getTx(); // How far left or right the target is (degrees)
-            double ty = result.getTy(); // How far up or down the target is (degrees)
-            double ta = result.getTa(); // How big the target looks (0%-100% of the image)
-
-            updateTelemetry();
-            telemetry.addData("Target X", tx);
-            telemetry.addData("Target Y", ty);
-            telemetry.addData("Target Area", ta);
+            tx = result.getTx(); // How far left or right the target is (degrees)
+            ty = result.getTy(); // How far up or down the target is (degrees)
+            ta = result.getTa(); // How big the target looks (0%-100% of the image)
         } else {
-            updateTelemetry();
-            telemetry.addData("Limelight", "No Targets");
+            tx = 0.0;
+            ty = 0.0;
+            ta = 0.0;
         }
+        updateTelemetry();
     }
 
     // This routine drives the robot field relative
@@ -244,6 +245,9 @@ public class ExperimentalTeleop extends OpMode {
         telemetry.addData("Servo Switch", servoSwitch);
         telemetry.addData("Servo Position", servo.getPosition());
         telemetry.addData("MS Interval:", telemetry.getMsTransmissionInterval());
+        telemetry.addData("Target X", tx);
+        telemetry.addData("Target Y", ty);
+        telemetry.addData("Target Area", ta);
         telemetry.update();
     }
 }

@@ -51,8 +51,8 @@ public class BotCentricTeleop extends OpMode {
     boolean servoButtonState;
     boolean previousServoButtonState;
 
-    double pollenPosition = 0.3;
-    double nectarPosition = 0.8;
+    double pollenPosition = 0.25;
+    double nectarPosition = 0.7;
 
     @Override
     public void init() {
@@ -106,7 +106,7 @@ public class BotCentricTeleop extends OpMode {
 
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
-            flywheel.setPower(0.85);
+            flywheel.setPower(0.9);
         } else {
             flywheel.setPower(0);
         }
@@ -173,7 +173,7 @@ public class BotCentricTeleop extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftDrive.getPower(), frontRightDrive.getPower());
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftDrive.getPower(), backRightDrive.getPower());
-        telemetry.addData("Servo Switch", servoSwitch);
+        telemetry.addData("Pollen Blocked", servoSwitch);
         telemetry.addData("Servo Position", servo.getPosition());
         telemetry.update();
     }
