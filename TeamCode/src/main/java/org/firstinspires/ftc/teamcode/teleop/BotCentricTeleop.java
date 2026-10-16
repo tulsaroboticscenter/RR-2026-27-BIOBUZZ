@@ -106,7 +106,7 @@ public class BotCentricTeleop extends OpMode {
 
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
-            flywheel.setPower(1);
+            flywheel.setPower(0.75);
         } else {
             flywheel.setPower(0);
         }
