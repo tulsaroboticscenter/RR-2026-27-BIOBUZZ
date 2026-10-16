@@ -125,7 +125,7 @@ public class FieldCentricTeleop extends OpMode {
 
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
-            flywheel.setPower(0.75);
+            flywheel.setPower(0.85);
         } else {
             flywheel.setPower(0);
         }
