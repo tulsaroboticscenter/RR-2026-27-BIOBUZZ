@@ -1,0 +1,67 @@
+package org.firstinspires.ftc.teamcode.pathingauto;
+
+import static com.pedropathing.api.Paths.curve;
+import static com.pedropathing.api.Paths.line;
+import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.groups.Groups.sequential;
+import static com.pedropathing.ivy.pedro.PedroCommands.follow;
+
+import com.pedropathing.api.PoseFactory;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.ivy.Command;
+import com.pedropathing.ivy.Scheduler;
+import com.pedropathing.math.Pose;
+import com.pedropathing.paths.Path;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.teamcode.pedro.Constants;
+
+@Autonomous(name = "Pedro Test", group = "Pedro Auto")
+@Disabled
+public class PedroTest extends OpMode {
+    private Follower follower;
+    private final PoseFactory p = PoseFactory.degrees();
+
+    // Pose declarations belong here.
+    private final Pose startPose = p.of(11, 13, 90);
+    private final Pose endPose = p.of(94, 34, 90);
+
+    private Path examplePath() {
+        // This creates a line between two poses on the field.
+        return line(startPose, endPose).linear(startPose, endPose);
+    }
+
+    private Command autoRoutine() {
+        return sequential(
+                follow(follower, examplePath())
+        );
+    }
+
+    @Override
+    public void init() {
+        Scheduler.reset();
+
+        follower = Constants.create(hardwareMap);
+        follower.setPose(startPose); // This should be replaced with the actual starting pose.
+        follower.update();
+    }
+
+    @Override
+    public void start() {
+        schedule(autoRoutine());
+    }
+
+    @Override
+    public void loop() {
+        follower.update();
+        Scheduler.execute();
+
+        telemetry.addData("X", follower.pose().x());
+        telemetry.addData("Y", follower.pose().y());
+        telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
+        telemetry.addData("Follower Mode", follower.mode());
+        telemetry.update();
+    }
+}

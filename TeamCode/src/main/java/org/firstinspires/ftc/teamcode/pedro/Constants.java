@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.pedro;
 
+import com.pedropathing.algorithm.Foresight;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.revhub.drivetrains.Mecanum;
 import com.pedropathing.revhub.drivetrains.MecanumConfig;
 import com.pedropathing.revhub.localizers.PinpointConfig;
+import com.pedropathing.revhub.localizers.PinpointLocalizer;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -24,8 +27,8 @@ public class Constants {
     public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
         c.name.set("pinpoint");
         c.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        c.xPodOffset.set(4.028);
-        c.yPodOffset.set(1.717);
+        c.xPodOffset.set(4.453306723767378);
+        c.yPodOffset.set(3.438697274275652);
         c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
         c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
@@ -33,7 +36,10 @@ public class Constants {
     });
 
     public static Follower create(HardwareMap h) {
-        // return new Follower(Drivetrain, Localizer, Foresight);
-        return null;
+        return new Follower(
+                new PinpointLocalizer(h, localizerConfig),
+                new Mecanum(h, drivetrainConfig),
+                new Foresight(null)
+        );
     }
 }
