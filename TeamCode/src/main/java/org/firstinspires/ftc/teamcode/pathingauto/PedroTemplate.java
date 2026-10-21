@@ -34,7 +34,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 @Disabled
 public class PedroTemplate extends OpMode {
     private Follower follower;
-    private final PoseFactory p = PoseFactory.degrees();
+    private final PoseFactory poseFactory = PoseFactory.degrees();
 
     // Pose declarations belong here.
     // For example (replacing null value):
@@ -54,6 +54,7 @@ public class PedroTemplate extends OpMode {
 
     private Command autoRoutine() {
         return sequential(
+                // Ideally, mechanism commands are also added here.
                 follow(follower, examplePath())
         );
     }
@@ -76,6 +77,7 @@ public class PedroTemplate extends OpMode {
     public void loop() {
         follower.update();
         Scheduler.execute();
+        // Ideally, other loop methods are added here.
 
         telemetry.addData("X", follower.pose().x());
         telemetry.addData("Y", follower.pose().y());

@@ -47,6 +47,7 @@ public class FieldCentricTeleop extends OpMode {
     DcMotor backLeftDrive;
     DcMotor backRightDrive;
     DcMotor flywheel;
+    DcMotor flywheel2;
     DcMotor intake;
     DcMotor intake2;
     Servo servo;
@@ -67,6 +68,7 @@ public class FieldCentricTeleop extends OpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        flywheel2 = hardwareMap.get(DcMotor.class, "flywheel");
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake2 = hardwareMap.get(DcMotor.class, "intake2");
         servo = hardwareMap.get(Servo.class, "servo");
@@ -90,6 +92,7 @@ public class FieldCentricTeleop extends OpMode {
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheel2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -125,9 +128,11 @@ public class FieldCentricTeleop extends OpMode {
 
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
-            flywheel.setPower(0.9);
+            flywheel.setPower(0.8);
+            flywheel2.setPower(0.8);
         } else {
             flywheel.setPower(0);
+            flywheel2.setPower(0);
         }
 
         // Intake 1 code
