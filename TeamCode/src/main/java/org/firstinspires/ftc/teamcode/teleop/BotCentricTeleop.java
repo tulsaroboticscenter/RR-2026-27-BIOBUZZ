@@ -48,6 +48,8 @@ public class BotCentricTeleop extends OpMode {
     DcMotor intake2;
     Servo servo;
 
+    double flywheelSpeed = 0.9;
+
     boolean servoSwitch;
     boolean servoButtonState;
     boolean previousServoButtonState;
@@ -79,6 +81,8 @@ public class BotCentricTeleop extends OpMode {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Brake all motors when stopped to reduce drift
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -109,8 +113,8 @@ public class BotCentricTeleop extends OpMode {
 
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
-            flywheel.setPower(0.8);
-            flywheel2.setPower(0.8);
+            flywheel.setPower(flywheelSpeed);
+            flywheel2.setPower(flywheelSpeed);
         } else {
             flywheel.setPower(0);
             flywheel2.setPower(0);

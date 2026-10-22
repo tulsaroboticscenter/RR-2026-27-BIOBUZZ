@@ -53,6 +53,8 @@ public class FieldCentricTeleop extends OpMode {
     Servo servo;
     IMU imu;
 
+    double flywheelSpeed = 0.9;
+
     boolean servoSwitch;
     boolean servoButtonState;
     boolean previousServoButtonState;
@@ -85,6 +87,8 @@ public class FieldCentricTeleop extends OpMode {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Brake all motors when stopped to reduce drift
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -128,8 +132,8 @@ public class FieldCentricTeleop extends OpMode {
 
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
-            flywheel.setPower(0.8);
-            flywheel2.setPower(0.8);
+            flywheel.setPower(flywheelSpeed);
+            flywheel2.setPower(flywheelSpeed);
         } else {
             flywheel.setPower(0);
             flywheel2.setPower(0);
@@ -188,7 +192,7 @@ public class FieldCentricTeleop extends OpMode {
         theta = AngleUnit.normalizeRadians(theta -
                 imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
-        // Third, convert back to cartesian
+        // Third, convert back to Cartesian
         double newForward = r * Math.sin(theta);
         double newRight = r * Math.cos(theta);
 
