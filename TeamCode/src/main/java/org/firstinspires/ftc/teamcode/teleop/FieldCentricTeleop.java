@@ -32,6 +32,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -53,7 +54,7 @@ public class FieldCentricTeleop extends OpMode {
     Servo servo;
     IMU imu;
 
-    double flywheelSpeed = 0.95;
+    double flywheelSpeed = 1.0;
 
     boolean servoSwitch;
     boolean servoButtonState;
@@ -80,6 +81,7 @@ public class FieldCentricTeleop extends OpMode {
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         flywheel.setDirection(DcMotor.Direction.REVERSE);
+        intake2.setDirection(DcMotorSimple.Direction.FORWARD);
         intake2.setDirection(DcMotor.Direction.REVERSE);
 
         // These lines should be removed if we aren't using the encoder
@@ -139,20 +141,14 @@ public class FieldCentricTeleop extends OpMode {
             flywheel2.setPower(0);
         }
 
-        // Intake 1 code
+        // Intake code
         if (gamepad1.left_trigger_pressed || (gamepad1.left_bumper && gamepad1.left_trigger_pressed)) {
             intake.setPower(1);
-            intake2.setPower(0);
+            intake2.setPower(-1);
         } else if (gamepad1.left_bumper) {
             intake.setPower(-1);
             intake2.setPower(-1);
-        } else {
-            intake.setPower(0);
-            intake2.setPower(0);
-        }
-
-        // Intake 2 code
-        if (gamepad1.a && !gamepad1.left_bumper) {
+        } else if (gamepad1.a) {
             intake.setPower(1);
             intake2.setPower(1);
         } else {
