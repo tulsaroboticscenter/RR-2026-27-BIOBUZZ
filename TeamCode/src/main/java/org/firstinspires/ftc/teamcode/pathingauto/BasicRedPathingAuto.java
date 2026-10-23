@@ -6,35 +6,29 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 import com.pedropathing.utils.Timer;
-import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
-import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import static org.firstinspires.ftc.teamcode.pedro.RedPoses.*;
 
-@Autonomous(name = "Pedro Test", group = "Pedro Auto")
-public class PedroTest extends OpMode {
+@Autonomous(name = "Basic Red Pathing Auto", group = "Pedro Auto")
+@Disabled
+public class BasicRedPathingAuto extends OpMode {
     public Timer runtime;
     private Follower follower;
-    private final PoseFactory poseFactory = PoseFactory.degrees();
-
-
-    private final Pose startPose = poseFactory.of(8.2879, 64.0109, 0);
-    private final Pose scorePose = poseFactory.of(55.9872, 8.1845, 90);
-    private final Pose parkPose = poseFactory.of(11.7064, 91.7518, 0);
 
     public Path startToScore() {
-        return line(startPose, scorePose).linear(startPose, scorePose);
+        return line(byLoadingZonePose, firstscorePose).linear(byLoadingZonePose, firstscorePose);
     }
 
     public Path scoreToPark() {
-        return line(scorePose, parkPose).linear(scorePose, parkPose);
+        return line(firstscorePose, parkRightPose).linear(firstscorePose, parkRightPose);
     }
 
     private Command autoRoutine() {
@@ -49,7 +43,7 @@ public class PedroTest extends OpMode {
         Scheduler.reset();
 
         follower = Constants.create(hardwareMap);
-        follower.setPose(startPose);
+        follower.setPose(byLoadingZonePose);
         follower.update();
     }
 

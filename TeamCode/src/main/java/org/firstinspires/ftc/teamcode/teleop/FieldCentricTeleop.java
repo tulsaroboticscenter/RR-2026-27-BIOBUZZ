@@ -53,7 +53,7 @@ public class FieldCentricTeleop extends OpMode {
     Servo servo;
     IMU imu;
 
-    double flywheelSpeed = 0.9;
+    double flywheelSpeed = 0.95;
 
     boolean servoSwitch;
     boolean servoButtonState;
@@ -153,8 +153,10 @@ public class FieldCentricTeleop extends OpMode {
 
         // Intake 2 code
         if (gamepad1.a && !gamepad1.left_bumper) {
+            intake.setPower(1);
             intake2.setPower(1);
         } else {
+            intake.setPower(0);
             intake2.setPower(0);
         }
 
