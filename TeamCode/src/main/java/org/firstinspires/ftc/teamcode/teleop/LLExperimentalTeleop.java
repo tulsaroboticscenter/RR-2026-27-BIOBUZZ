@@ -29,8 +29,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -43,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name = "Experimental Teleop (DO NOT USE!)", group = "Drive")
-public class ExperimentalTeleop extends OpMode {
+public class LLExperimentalTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
     DcMotor frontLeftDrive;

@@ -29,6 +29,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -40,6 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name = "Field Centric Teleop", group = "Drive")
+@Disabled
 public class FieldCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -55,6 +57,7 @@ public class FieldCentricTeleop extends OpMode {
     IMU imu;
 
     double flywheelSpeed = 1.0;
+
 
     boolean servoSwitch;
     boolean servoButtonState;
@@ -136,10 +139,14 @@ public class FieldCentricTeleop extends OpMode {
         if (gamepad1.right_trigger_pressed) {
             flywheel.setPower(flywheelSpeed);
             flywheel2.setPower(flywheelSpeed);
+        } else if (gamepad1.y) {
+            flywheel.setPower(-1.0);
+            flywheel2.setPower(-1.0);
         } else {
             flywheel.setPower(0);
             flywheel2.setPower(0);
         }
+
 
         // Intake code
         if (gamepad1.left_trigger_pressed || (gamepad1.left_bumper && gamepad1.left_trigger_pressed)) {

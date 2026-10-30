@@ -49,7 +49,7 @@ public class BotCentricTeleop extends OpMode {
     DcMotor intake2;
     Servo servo;
 
-    double flywheelSpeed = 1.0;
+    double flywheelSpeed = 0.9;
 
     boolean servoSwitch;
     boolean servoButtonState;
@@ -117,6 +117,9 @@ public class BotCentricTeleop extends OpMode {
         if (gamepad1.right_trigger_pressed) {
             flywheel.setPower(flywheelSpeed);
             flywheel2.setPower(flywheelSpeed);
+        } else if (gamepad1.y) {
+            flywheel.setPower(-1.0);
+            flywheel2.setPower(-1.0);
         } else {
             flywheel.setPower(0);
             flywheel2.setPower(0);
