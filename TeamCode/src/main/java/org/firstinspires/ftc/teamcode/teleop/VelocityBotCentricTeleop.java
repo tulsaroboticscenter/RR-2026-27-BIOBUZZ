@@ -36,14 +36,24 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.config.RobotConstants;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp(name = "DO NOT USE UNLESS TESTING", group = "Drive")
 public class VelocityBotCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
-    double flywheelSpeed = 0.9;
-    int flywheelVelocity = 2100;
+    DcMotor frontLeftDrive;
+    DcMotor frontRightDrive;
+    DcMotor backLeftDrive;
+    DcMotor backRightDrive;
+    DcMotorEx flywheel;
+    DcMotorEx flywheel2;
+    DcMotor intake;
+    DcMotor intake2;
+    Servo servo;
+
+    // double flywheelSpeed = 0.9;
+    double flywheelVelocity = 2100;
 
     boolean servoSwitch;
     boolean servoButtonState;
@@ -85,8 +95,6 @@ public class VelocityBotCentricTeleop extends OpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     @Override

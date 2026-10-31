@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -43,13 +44,14 @@ public class BotCentricTeleop extends OpMode {
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
     DcMotor backRightDrive;
-    DcMotor flywheel;
-    DcMotor flywheel2;
+    DcMotorEx flywheel;
+    DcMotorEx flywheel2;
     DcMotor intake;
     DcMotor intake2;
     Servo servo;
 
     double flywheelSpeed = 0.9;
+    double flywheelVelocity = 2100;
 
     boolean servoSwitch;
     boolean servoButtonState;
@@ -65,8 +67,8 @@ public class BotCentricTeleop extends OpMode {
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
-        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
-        flywheel2 = hardwareMap.get(DcMotor.class, "flywheel2");
+        flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
+        flywheel2 = hardwareMap.get(DcMotorEx.class, "flywheel2");
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake2 = hardwareMap.get(DcMotor.class, "intake2");
         servo = hardwareMap.get(Servo.class, "servo");
@@ -91,10 +93,6 @@ public class BotCentricTeleop extends OpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flywheel2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intake2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     @Override
@@ -115,29 +113,33 @@ public class BotCentricTeleop extends OpMode {
 
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
-            flywheel.setPower(flywheelSpeed);
-            flywheel2.setPower(flywheelSpeed);
+            flywheel.setVelocity(flywheelVelocity);
+            flywheel2.setVelocity(flywheelVelocity);
         } else if (gamepad1.y) {
-            flywheel.setPower(-1.0);
-            flywheel2.setPower(-1.0);
+            flywheel.setVelocity(-flywheelVelocity);
+            flywheel2.setVelocity(-flywheelVelocity);
+            intake2.setPower(-1);
         } else {
-            flywheel.setPower(0);
-            flywheel2.setPower(0);
+            flywheel.setVelocity(0);
+            flywheel2.setVelocity(0);
+            intake2.setPower(0);
         }
 
         // Intake code
-        if (gamepad1.left_trigger_pressed || (gamepad1.left_bumper && gamepad1.left_trigger_pressed)) {
-            intake.setPower(1);
-            intake2.setPower(-1);
-        } else if (gamepad1.left_bumper) {
-            intake.setPower(-1);
-            intake2.setPower(-1);
-        } else if (gamepad1.a) {
-            intake.setPower(1);
-            intake2.setPower(1);
-        } else {
-            intake.setPower(0);
-            intake2.setPower(0);
+        if (!gamepad1.y) {
+            if (gamepad1.left_trigger_pressed || (gamepad1.left_bumper && gamepad1.left_trigger_pressed)) {
+                intake.setPower(1);
+                intake2.setPower(-1);
+            } else if (gamepad1.left_bumper) {
+                intake.setPower(-1);
+                intake2.setPower(-1);
+            } else if (gamepad1.a) {
+                intake.setPower(1);
+                intake2.setPower(1);
+            } else {
+                intake.setPower(0);
+                intake2.setPower(0);
+            }
         }
 
         // Servo code
@@ -185,6 +187,8 @@ public class BotCentricTeleop extends OpMode {
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftDrive.getPower(), backRightDrive.getPower());
         telemetry.addData("Pollen Blocked", servoSwitch);
         telemetry.addData("Servo Position", servo.getPosition());
+        telemetry.addData("Flywheel 1 Velocity", flywheel.getVelocity());
+        telemetry.addData("Flywheel 2 Velocity", flywheel2.getVelocity());
         telemetry.update();
     }
 }
