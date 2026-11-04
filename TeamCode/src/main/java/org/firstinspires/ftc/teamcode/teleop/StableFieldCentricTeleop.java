@@ -28,18 +28,24 @@
  */
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Bot Centric Teleop", group = "Drive")
-public class BotCentricTeleop extends OpMode {
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+@TeleOp(name = "Field Centric Teleop", group = "Drive")
+public class StableFieldCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
+    // Declare members
     DcMotor frontLeftDrive;
     DcMotor frontRightDrive;
     DcMotor backLeftDrive;
@@ -49,14 +55,16 @@ public class BotCentricTeleop extends OpMode {
     DcMotor intake;
     DcMotor intake2;
     Servo servo;
+    IMU imu;
 
-    double flywheelSpeed = 0.9;
-    double flywheelVelocity = 2100;
+    double flywheelVelocity = 2100; // Flywheel target speed
 
+    // Booleans for proper servo switching
     boolean servoSwitch;
     boolean servoButtonState;
     boolean previousServoButtonState;
 
+    // Servo positions
     double pollenPosition = 0.25;
     double nectarPosition = 0.7;
 
@@ -68,16 +76,17 @@ public class BotCentricTeleop extends OpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
-        flywheel2 = hardwareMap.get(DcMotorEx.class, "flywheel2");
+        flywheel2 = hardwareMap.get(DcMotorEx.class, "flywheel");
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake2 = hardwareMap.get(DcMotor.class, "intake2");
         servo = hardwareMap.get(Servo.class, "servo");
+        imu = hardwareMap.get(IMU.class, "imu");
 
         // Reverse the motor directions on the left side
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         flywheel.setDirection(DcMotor.Direction.REVERSE);
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake2.setDirection(DcMotorSimple.Direction.FORWARD);
         intake2.setDirection(DcMotor.Direction.REVERSE);
 
         // These lines should be removed if we aren't using the encoder
@@ -93,6 +102,16 @@ public class BotCentricTeleop extends OpMode {
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        flywheel2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Adjust the orientation parameters to match robot
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        imu.initialize(parameters);
     }
 
     @Override
@@ -103,7 +122,9 @@ public class BotCentricTeleop extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addLine("You are in ROBOT CENTRIC");
+        telemetry.addLine("You are in FIELD CENTRIC");
+        telemetry.addLine("Press A to reset Yaw");
+        telemetry.addLine("Hold X to drive in robot relative");
         telemetry.addLine("The left joystick sets the robot direction");
         telemetry.addLine("Moving the right joystick left and right turns the robot");
         telemetry.addLine("Hold left trigger to activate intake inwards, press the bumper in front of it to reverse");
@@ -111,15 +132,23 @@ public class BotCentricTeleop extends OpMode {
         telemetry.addLine("Press B to toggle the gate servo position.");
         telemetry.addLine(" ");
 
+        // A button resets yaw
+        if (gamepad1.a) {
+            imu.resetYaw();
+        }
+
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
+            // Speed up both flywheels
             flywheel.setVelocity(flywheelVelocity);
             flywheel2.setVelocity(flywheelVelocity);
         } else if (gamepad1.y) {
+            // Stop both flywheels
             flywheel.setVelocity(-flywheelVelocity);
             flywheel2.setVelocity(-flywheelVelocity);
             intake2.setPower(-1);
         } else {
+            // Turn all motors associated off
             flywheel.setVelocity(0);
             flywheel2.setVelocity(0);
             intake2.setPower(0);
@@ -128,15 +157,19 @@ public class BotCentricTeleop extends OpMode {
         // Intake code
         if (!gamepad1.y) {
             if (gamepad1.left_trigger_pressed || (gamepad1.left_bumper && gamepad1.left_trigger_pressed)) {
+                // Move elements inside intake but outside the transfer
                 intake.setPower(1);
                 intake2.setPower(-1);
             } else if (gamepad1.left_bumper) {
+                // Eject elements in intake
                 intake.setPower(-1);
                 intake2.setPower(-1);
             } else if (gamepad1.a) {
+                // Move elements from transfer to flywheel
                 intake.setPower(1);
                 intake2.setPower(1);
             } else {
+                // Turn all motors associated off
                 intake.setPower(0);
                 intake2.setPower(0);
             }
@@ -156,8 +189,33 @@ public class BotCentricTeleop extends OpMode {
             servo.setPosition(pollenPosition);
         }
 
-        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x * 1.1, gamepad1.right_stick_x);
+
+        // Temporarily changes to bot-centric if Y is HELD.
+        if (gamepad1.x) {
+            drive(-gamepad1.left_stick_y, gamepad1.left_stick_x * 1.1, gamepad1.right_stick_x);
+        } else {
+            driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x * 1.1, gamepad1.right_stick_x);
+        }
+
         updateTelemetry();
+    }
+
+    // This routine drives the robot field relative
+    private void driveFieldRelative(double forward, double right, double rotate) {
+        // First, convert direction being asked to drive to polar coordinates
+        double theta = Math.atan2(forward, right);
+        double r = Math.hypot(right, forward);
+
+        // Second, rotate angle by the angle the robot is pointing
+        theta = AngleUnit.normalizeRadians(theta -
+                imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+
+        // Third, convert back to Cartesian
+        double newForward = r * Math.sin(theta);
+        double newRight = r * Math.cos(theta);
+
+        // Finally, call the drive method with robot relative forward and right amounts
+        drive(newForward, newRight, rotate);
     }
 
     public void drive(double forward, double right, double rotate) {
@@ -185,10 +243,9 @@ public class BotCentricTeleop extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime);
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftDrive.getPower(), frontRightDrive.getPower());
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftDrive.getPower(), backRightDrive.getPower());
+        telemetry.addData("Yaw", imu.getRobotYawPitchRollAngles());
         telemetry.addData("Pollen Blocked", servoSwitch);
         telemetry.addData("Servo Position", servo.getPosition());
-        telemetry.addData("Flywheel 1 Velocity", flywheel.getVelocity());
-        telemetry.addData("Flywheel 2 Velocity", flywheel2.getVelocity());
         telemetry.update();
     }
 }
