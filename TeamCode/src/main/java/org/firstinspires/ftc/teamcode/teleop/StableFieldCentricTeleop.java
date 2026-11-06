@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name = "Field Centric Teleop", group = "Drive")
+@TeleOp(name = "Field Centric Teleop (currently has shooter problems)", group = "Drive")
 public class StableFieldCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
