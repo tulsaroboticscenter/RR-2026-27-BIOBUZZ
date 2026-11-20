@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name = "Experimental Teleop (DO NOT USE!)", group = "Drive")
+@TeleOp(name = "Limelight - Not a Competition OpMode", group = "Testing")
 @Disabled
 public class LLExperimentalTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();

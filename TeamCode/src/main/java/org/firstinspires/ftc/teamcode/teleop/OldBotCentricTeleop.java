@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -36,8 +37,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Bot Centric Teleop", group = "Drive")
-public class StableBotCentricTeleop extends OpMode {
+@TeleOp(name = "Old Bot Centric Teleop", group = "Drive")
+@Disabled
+public class OldBotCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
     // Declare members
@@ -51,7 +53,7 @@ public class StableBotCentricTeleop extends OpMode {
     DcMotor intake2;
     Servo servo;
 
-    double flywheelVelocity = 2100; // Flywheel target speed
+    double flywheelPower = 0.55; // Flywheel target speed
 
     // Booleans for proper servo switching
     boolean servoSwitch;
@@ -117,17 +119,17 @@ public class StableBotCentricTeleop extends OpMode {
         // Flywheel code
         if (gamepad1.right_trigger_pressed) {
             // Speed up both flywheels
-            flywheel.setVelocity(flywheelVelocity);
-            flywheel2.setVelocity(flywheelVelocity);
+            flywheel.setPower(flywheelPower);
+            flywheel2.setPower(flywheelPower);
         } else if (gamepad1.y) {
-            // Stop both flywheels
-            flywheel.setVelocity(-flywheelVelocity);
-            flywheel2.setVelocity(-flywheelVelocity);
+            // Reverse both flywheels
+            flywheel.setPower(-1.0);
+            flywheel2.setPower(-1.0);
             intake2.setPower(-1);
         } else {
             // Turn all motors associated off
-            flywheel.setVelocity(0);
-            flywheel2.setVelocity(0);
+            flywheel.setPower(0);
+            flywheel2.setPower(0);
             intake2.setPower(0);
         }
 

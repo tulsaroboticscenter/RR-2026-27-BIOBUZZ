@@ -28,6 +28,7 @@
  */
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -37,7 +38,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "DO NOT USE IF NOT TESTING - PIDF", group = "Drive")
+@TeleOp(name = "PIDF Tuned - Not a Competition OpMode", group = "Drive")
+@Disabled
 public class PIDFTunedBotCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -52,8 +54,16 @@ public class PIDFTunedBotCentricTeleop extends OpMode {
     DcMotor intake2;
     Servo servo;
 
+    // Booleans for proper servo switching
+    boolean servoSwitch;
+    boolean servoButtonState;
+    boolean previousServoButtonState;
 
+    // Servo positions
+    double pollenPosition = 0.25;
+    double nectarPosition = 0.7;
 
+    // Flywheel stuff??
     double highFlywheelVelocity = 1500;
     double lowFlywheelVelocity = 900;
     double curTargetVelocity = highFlywheelVelocity;
@@ -71,15 +81,6 @@ public class PIDFTunedBotCentricTeleop extends OpMode {
 
     int stepIndex = 1;
 
-    // Booleans for proper servo switching
-    boolean servoSwitch;
-    boolean servoButtonState;
-    boolean previousServoButtonState;
-
-    // Servo positions
-    double pollenPosition = 0.25;
-    double nectarPosition = 0.7;
-
     @Override
     public void init() {
         // Map motors to assigned driver hub names
@@ -96,9 +97,8 @@ public class PIDFTunedBotCentricTeleop extends OpMode {
         // Reverse the motor directions on the left side
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        flywheel.setDirection(DcMotorEx.Direction.REVERSE);
-        flywheel2.setDirection(DcMotorEx.Direction.FORWARD);
-        intake.setDirection(DcMotor.Direction.FORWARD);
+        flywheel.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
         intake2.setDirection(DcMotor.Direction.REVERSE);
 
         // These lines should be removed if we aren't using the encoder
@@ -115,7 +115,7 @@ public class PIDFTunedBotCentricTeleop extends OpMode {
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // PIDF Tuning
+        // Set PIDF coefficients
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
     }
@@ -137,49 +137,14 @@ public class PIDFTunedBotCentricTeleop extends OpMode {
         telemetry.addLine("Press B to toggle the gate servo position.");
         telemetry.addLine(" ");
 
-        // PIDF FLYWHEEL CODE
-        // get all our gamepad commands
-        // set target velocity
-        // update telemetry
-
-        if (gamepad1.xWasPressed()) {
-            if (curTargetVelocity == highFlywheelVelocity) {
-                curTargetVelocity = lowFlywheelVelocity;
-            } else {
-                curTargetVelocity = highFlywheelVelocity;
-            }
-        }
-
-        if (gamepad1.bWasPressed()) {
-            stepIndex = (stepIndex + 1) % stepSizes.length;
-        }
-
-        if (gamepad1.dpadLeftWasPressed()) {
-            F -= stepSizes[stepIndex];
-        }
-
-        if (gamepad1.dpadRightWasPressed()) {
-            F += stepSizes[stepIndex];
-        }
-
-        if (gamepad1.dpadDownWasPressed()) {
-            P += stepSizes[stepIndex];
-        }
-
-        if (gamepad1.dpadUpWasPressed()) {
-            P -= stepSizes[stepIndex];
-        }
-
-        // Set new PIDF coefficients
+        // Recreate the flywheel coefficients
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         // Set velocity
         flywheel.setVelocity(curTargetVelocity);
+        flywheel2.setVelocity(curTargetVelocity);
 
-        double curVelocity1 = flywheel.getVelocity();
-        double curVelocity2 = flywheel2.getVelocity();
-        double error = curTargetVelocity - ((curVelocity1 + curVelocity2) / 2.0);
 
         // Intake code
         if (!gamepad1.y) {
@@ -203,7 +168,7 @@ public class PIDFTunedBotCentricTeleop extends OpMode {
         }
 
         // Servo code
-        servoButtonState = gamepad1.right_bumper;
+        servoButtonState = gamepad1.b;
         if (servoButtonState && !previousServoButtonState) {
             servoSwitch = !servoSwitch; // Toggles the gate position
         }
@@ -252,22 +217,3 @@ public class PIDFTunedBotCentricTeleop extends OpMode {
         telemetry.update();
     }
 }
-
-/*
-        // Flywheel code
-        if (gamepad1.right_trigger_pressed) {
-        // Speed up both flywheels
-        flywheel.setVelocity(flywheelVelocity);
-            flywheel2.setVelocity(flywheelVelocity);
-        } else if (gamepad1.y) {
-        // Stop both flywheels
-        flywheel.setVelocity(-flywheelVelocity);
-            flywheel2.setVelocity(-flywheelVelocity);
-            intake2.setPower(-1);
-        } else {
-                // Turn all motors associated off
-                flywheel.setVelocity(0);
-            flywheel2.setVelocity(0);
-            intake2.setPower(0);
-        }
-*/
