@@ -67,7 +67,7 @@ public class CTS_BotCentricTeleop extends OpMode {
 
     // ---- Shooter settings (tuned with PIDFTestingBotCentricTeleop) ----
     // Target flywheel speed in ticks/second. Both flywheels always spin at this speed.
-    static final double SHOOT_VELOCITY = 1400;
+    static final double SHOOT_VELOCITY = 1415;
     // How close (ticks/second) the average flywheel speed must be before we feed a ball.
     static final double VELOCITY_TOLERANCE = 50;
     // true = the transfer only feeds when the flywheels are up to speed
