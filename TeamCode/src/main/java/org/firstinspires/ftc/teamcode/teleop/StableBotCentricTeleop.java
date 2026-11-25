@@ -40,8 +40,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-@TeleOp(name = "CTS Bot Centric Teleop", group = "Drive")
-public class CTS_BotCentricTeleop extends OpMode {
+@TeleOp(name = "Bot Centric Teleop", group = "Drive")
+public class StableBotCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
 
     // Declare members
