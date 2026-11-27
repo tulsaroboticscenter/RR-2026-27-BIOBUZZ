@@ -38,8 +38,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-
 @TeleOp(name = "Bot Centric Teleop", group = "Drive")
 public class StableBotCentricTeleop extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
@@ -224,13 +222,6 @@ public class StableBotCentricTeleop extends OpMode {
 
     public void updateTelemetry() {
         telemetry.addData("Status", "Run Time: " + runtime);
-//        telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftDrive.getPower(), frontRightDrive.getPower());
-//        telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftDrive.getPower(), backRightDrive.getPower());
-//        telemetry.addData("Current - front left/Right", "%4.2f, %4.2f", frontLeftDrive.getCurrent(CurrentUnit.MILLIAMPS), frontRightDrive.getCurrent(CurrentUnit.MILLIAMPS));
-//        telemetry.addData("Current - back left/Right", "%4.2f, %4.2f", backLeftDrive.getCurrent(CurrentUnit.MILLIAMPS), backRightDrive.getCurrent(CurrentUnit.MILLIAMPS));
-//        telemetry.addData("Current - intake 1", "%4.2f, %4.2f", intake.getCurrent(CurrentUnit.MILLIAMPS));
-        // telemetry.addData("Pollen Blocked", servoSwitch);
-        // telemetry.addData("Servo Position", servo.getPosition());
         telemetry.addData("Flywheel 1 Velocity", flywheel1Vel);
         telemetry.addData("Flywheel 2 Velocity", flywheel2Vel);
         telemetry.addData("Flywheel 1 Power", flywheel.getPower());

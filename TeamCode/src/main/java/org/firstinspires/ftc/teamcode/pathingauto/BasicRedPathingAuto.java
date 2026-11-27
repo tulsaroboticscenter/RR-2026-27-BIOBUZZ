@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
-import static org.firstinspires.ftc.teamcode.pedro.RedPoses.*;
+import static org.firstinspires.ftc.teamcode.pedro.Poses.*;
 
 @Autonomous(name = "Basic Red Pathing Auto", group = "Pedro Auto")
 @Disabled
